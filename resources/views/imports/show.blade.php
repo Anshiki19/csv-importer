@@ -1,35 +1,31 @@
 @extends('layouts.app')
 
-@section('title', 'Import Summary')
+@section('title', 'Import Details')
 
 @section('content')
 
 <div>
 
     <div class="page-header">
-        <h1>Import #1</h1>
+        <h1>Import #{{ $import->id }}</h1>
 
         <p>
-            Customer import summary
+            {{ $import->filename }}
         </p>
     </div>
 
-    <div class="card" style="margin-bottom: 24px;">
-
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <strong>customers.csv</strong>
-
-                <div class="help-text">
-                    Import completed successfully.
-                </div>
-            </div>
-
-            <span class="status">
-                Completed
-            </span>
+    @if (session('success'))
+        <div class="info-box" style="margin-bottom: 24px;">
+            <p class="info-box-text" style="margin: 0;">
+                {{ session('success') }}
+            </p>
         </div>
+    @endif
 
+    <div style="margin-bottom: 24px;">
+        <span class="status status-{{ $import->status }}">
+            {{ ucfirst($import->status) }}
+        </span>
     </div>
 
     <div class="summary-grid">
@@ -40,7 +36,7 @@
             </div>
 
             <div class="summary-value">
-                100
+                {{ $import->total_rows }}
             </div>
         </div>
 
@@ -50,7 +46,7 @@
             </div>
 
             <div class="summary-value">
-                82
+                {{ $import->imported_rows }}
             </div>
         </div>
 
@@ -60,7 +56,7 @@
             </div>
 
             <div class="summary-value">
-                10
+                {{ $import->invalid_rows }}
             </div>
         </div>
 
@@ -70,110 +66,75 @@
             </div>
 
             <div class="summary-value">
-                8
+                {{ $import->duplicate_rows }}
             </div>
         </div>
 
     </div>
 
-    <div class="section">
+    <div class="card section">
 
         <h2 class="section-title">
             Import Errors
         </h2>
 
-        <div class="card">
+        <div class="table-wrapper">
 
-            <div class="table-wrapper">
+            <table>
 
-                <table>
+                <thead>
+                    <tr>
+                        <th>Row No</th>
+                        <th>Type</th>
+                        <th>Message</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
 
-                    <thead>
-                        <tr>
-                            <th>Row</th>
-                            <th>Type</th>
-                            <th>Message</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
+                <tbody>
 
-                    <tbody>
-
-                        <tr>
-                            <td>5</td>
-                            <td>Invalid</td>
-                            <td>Invalid email address</td>
-                            <td>Invalid email address</td>
-                        </tr>
+                    @forelse ($import->errors as $error)
 
                         <tr>
-                            <td>12</td>
-                            <td>Duplicate</td>
-                            <td>Email already exists</td>
-                            <td>Invalid email address</td>
+                            <td>
+                                {{ $error->row_number }}
+                            </td>
+
+                            <td>
+                                {{ ucfirst($error->error_type) }}
+                            </td>
+
+                            <td>
+                                {{ $error->message }}
+                            </td>
+
+                            <td>
+                                {{ json_encode($error->row_data) }}
+                            </td>
                         </tr>
+
+                    @empty
 
                         <tr>
-                            <td>18</td>
-                            <td>Invalid</td>
-                            <td>Phone number is required</td>
-                            <td>Invalid email address</td>
+                            <td colspan="4" style="text-align: center; padding: 30px;">
+                                No errors found.
+                            </td>
                         </tr>
 
-                    </tbody>
+                    @endforelse
 
-                </table>
+                </tbody>
 
-            </div>
+            </table>
 
         </div>
 
     </div>
 
-    <div class="section">
-
-        <h2 class="section-title">
-            Webhook Delivery
-        </h2>
-
-        <div class="card">
-
-            <div class="webhook-info">
-
-                <div class="webhook-item">
-                    <div class="webhook-label">
-                        Event
-                    </div>
-
-                    <div class="webhook-value">
-                        import.completed
-                    </div>
-                </div>
-
-                <div class="webhook-item">
-                    <div class="webhook-label">
-                        Status
-                    </div>
-
-                    <div class="webhook-value">
-                        Delivered
-                    </div>
-                </div>
-
-                <div class="webhook-item">
-                    <div class="webhook-label">
-                        Attempts
-                    </div>
-
-                    <div class="webhook-value">
-                        1
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
+    <div style="margin-top: 24px;">
+        <a href="{{ route('imports.index') }}" class="button">
+            Back to Import History
+        </a>
     </div>
 
 </div>

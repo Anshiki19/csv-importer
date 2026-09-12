@@ -7,110 +7,91 @@
 <div>
 
 
-<div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
-    <div>
-        <h1>Import History</h1>
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>Import History</h1>
 
-        <p>
-            View and manage your customer CSV imports.
-        </p>
+            <p>
+                View all customer CSV imports and their processing results.
+            </p>
+        </div>
+
+        <a href="{{ route('imports.create') }}" class="button">
+            Upload CSV
+        </a>
     </div>
 
-    <a href="{{ route('imports.create') }}" class="button">
-        Upload CSV
-    </a>
-</div>
+    <div class="card">
 
-<div class="card">
+        <div class="table-wrapper">
 
-    <div class="table-wrapper">
+            <table>
 
-        <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>File Name</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Imported</th>
+                        <th>Invalid</th>
+                        <th>Duplicates</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>File Name</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                    <th>Imported</th>
-                    <th>Invalid</th>
-                    <th>Duplicates</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+                <tbody>
 
-            <tbody>
+                    @forelse ($imports as $import)
 
-                <tr>
-                    <td>3</td>
-                    <td>customers3.csv</td>
-                    <td>
-                        <span class="status">
-                            Completed
-                        </span>
-                    </td>
-                    <td>100</td>
-                    <td>82</td>
-                    <td>10</td>
-                    <td>8</td>
-                    <td>12 Sep 2026</td>
-                    <td>
-                        <a href="{{ route('imports.show', 3) }}">
-                            View
-                        </a>
-                    </td>
-                </tr>
+                        <tr>
+                            <td>{{ $import->id }}</td>
 
-                <tr>
-                    <td>2</td>
-                    <td>customers2.csv</td>
-                    <td>
-                        <span class="status status-processing">
-                            Processing
-                        </span>
-                    </td>
-                    <td>500</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>12 Sep 2026</td>
-                    <td>
-                        <a href="{{ route('imports.show', 2) }}">
-                            View
-                        </a>
-                    </td>
-                </tr>
+                            <td>{{ $import->filename }}</td>
 
-                <tr>
-                    <td>1</td>
-                    <td>customers.csv</td>
-                    <td>
-                        <span class="status">
-                            Completed
-                        </span>
-                    </td>
-                    <td>50</td>
-                    <td>45</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>11 Sep 2026</td>
-                    <td>
-                        <a href="{{ route('imports.show', 1) }}">
-                            View
-                        </a>
-                    </td>
-                </tr>
+                            <td>
+                                <span class="status status-{{ $import->status }}">
+                                    {{ ucfirst($import->status) }}
+                                </span>
+                            </td>
 
-            </tbody>
+                            <td>{{ $import->total_rows }}</td>
 
-        </table>
+                            <td>{{ $import->imported_rows }}</td>
+
+                            <td>{{ $import->invalid_rows }}</td>
+
+                            <td>{{ $import->duplicate_rows }}</td>
+
+                            <td>
+                                {{ $import->created_at->format('d M Y, h:i A') }}
+                            </td>
+
+                            <td>
+                                <a href="{{ route('imports.show', $import) }}">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+                    @empty
+
+                        <tr>
+                            <td colspan="9" style="text-align: center; padding: 40px;">
+                                No imports found.
+                            </td>
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
-
-</div>
-
 
 </div>
 
