@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('customer_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('import_id')->constrained('imports')->cascadeOnDelete();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone');

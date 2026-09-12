@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->unsignedInteger('imported_rows')->default(0);
             $table->unsignedInteger('invalid_rows')->default(0);
             $table->unsignedInteger('duplicate_rows')->default(0);
-
+            $table->text('failure_reason')->nullable();
             $table->timestamp('started_at')->nullable();
             $table->timestamp('completed_at')->nullable();
 

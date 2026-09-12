@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreImportRequest;
 use App\Models\Import;
+use App\Jobs\ProcessImport;
 
 class ImportController extends Controller
 {
@@ -29,6 +30,8 @@ class ImportController extends Controller
             'filename' => $filename,
             'status' => 'pending',
         ]);
+
+        ProcessImport::dispatch($import, $path);
 
         return redirect()
             ->route('imports.show', $import)

@@ -17,7 +17,7 @@ class StoreImportRequest extends FormRequest
             'file' => [
                 'required',
                 'file',
-                'extensions:csv,xls,xlsx',
+                'extensions:csv',
                 'max:5120',
             ],
         ];
@@ -26,11 +26,25 @@ class StoreImportRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'file.required' => 'Please select a file.',
+            'file.required' => 'Please select a CSV file.',
             'file.file' => 'The uploaded file is invalid.',
-            'file.extensions' => 'The file must be a CSV or Excel file.',
-            'file.max' => 'The file must not be larger than 5 MB.',
+            'file.extensions' => 'The file must be a CSV file.',
+            'file.max' => 'The CSV file must not be larger than 5 MB.',
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $file = $this->file('file');
+
+            if ($file && $file->getSize() === 0) {
+                $validator->errors()->add(
+                    'file',
+                    'The CSV file cannot be empty.'
+                );
+            }
+        });
     }
 
 }
